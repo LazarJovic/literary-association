@@ -50,4 +50,8 @@ public class Book extends WorkingPaper {
         this.price = price;
         this.additionalAuthors = additionalAuthors;
     }
+
+    public String getAuthors() {
+        return String.format("%s %s, %s", this.getWriter().getName(), this.getWriter().getSurname(), this.getAdditionalAuthors());
+    }
 }

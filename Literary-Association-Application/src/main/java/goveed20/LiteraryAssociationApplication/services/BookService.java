@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 @Service
 public class BookService {
 
-    private static final String booksFolder = "Literary-Association-Application/src/main/resources/books/";
+    private static final String booksFolder = "literary-association/Literary-Association-Application/src/main/resources/books/";
 
     @Autowired
     private RuntimeService runtimeService;

@@ -1,5 +1,6 @@
 package goveed20.LiteraryAssociationApplication.utils;
 
+import goveed20.LiteraryAssociationApplication.elastic.services.IndexUnitService;
 import goveed20.LiteraryAssociationApplication.model.*;
 import goveed20.LiteraryAssociationApplication.model.enums.GenreEnum;
 import goveed20.LiteraryAssociationApplication.model.enums.TransactionStatus;
@@ -24,7 +25,10 @@ import java.util.Set;
 @Service
 public class DummyDataService {
 
-    private static final String booksFolder = "Literary-Association-Application/src/main/resources/books/";
+    private static final String booksFolder = "E:/UDD/literary-association/Literary-Association-Application/src/main/resources/books/";
+
+    @Autowired
+    private IndexUnitService indexUnitService;
 
     @Autowired
     private BaseUserRepository baseUserRepository;
@@ -221,10 +225,10 @@ public class DummyDataService {
             Book b1 = Book.bookBuilder()
                     .file(String.format("%sUpravljanje digitalnim dokumentima.pdf", booksFolder))
                     .title("Upravljanje digitalnim dokumentima")
-                    .synopsis("synopsis1")
+                    .synopsis("Knjiga vezana za upravljanje digitalnim dokumentima")
                     .genre(g1)
                     .ISBN("0-3818-9816-4")
-                    .keywords("burek,meso")
+                    .keywords("dokument,sistem,digitalno")
                     .publisher("FTN")
                     .publicationYear(2014)
                     .pages(240)
@@ -237,28 +241,28 @@ public class DummyDataService {
             Book b2 = Book.bookBuilder()
                     .file(String.format("%sKrv vilenjaka.pdf", booksFolder))
                     .title("Krv vilenjaka")
-                    .synopsis("synopsis1")
+                    .synopsis("Knjiga o Geraltu od Rivije")
                     .genre(g2)
                     .ISBN("0-8823-8460-0")
-                    .keywords("burek,sir")
+                    .keywords("vestac,dvorac,cudoviste")
                     .publisher("Carobna knjiga")
-                    .publicationYear(2014)
+                    .publicationYear(2012)
                     .pages(317)
                     .price(16.0)
                     .publicationPlace("Beograd, Srbija")
-                    .additionalAuthors("Andzej Sapkovski,Branko Milosavljevic")
+                    .additionalAuthors("Andzej Sapkovski,Milica Markic")
                     .build();
             b2.setWriter(writer2);
 
             Book b3 = Book.bookBuilder()
-                    .file(String.format("%sSistemi elektronskog poslovanja.pdf", booksFolder))
-                    .title("Sistemi elektronskog poslovanja")
-                    .synopsis("Sinobsis")
+                    .file(String.format("%sLiterarno udruzenje.pdf", booksFolder))
+                    .title("Literarno udruzenje")
+                    .synopsis("Specifikacija projekta iz tri predmeta")
                     .genre(g3)
                     .ISBN("0-6918-9816-4")
-                    .keywords("burek,sir")
+                    .keywords("projekat,udruzenje,specifikacija")
                     .publisher("FTN")
-                    .publicationYear(2015)
+                    .publicationYear(2020)
                     .pages(690)
                     .publicationPlace("Novi Sad, Srbija")
                     .price(30.0)
@@ -267,34 +271,34 @@ public class DummyDataService {
             b3.setWriter(writer3);
 
             Book book = Book.bookBuilder()
-                    .ISBN("123412341234")
-                    .publisher("Carobna kljiga")
-                    .title("Kljiga")
-                    .publicationYear(1998)
-                    .keywords("kljucne reci")
-                    .pages(256)
-                    .publicationPlace("mesto publikacije")
-                    .genre(genreRepository.findByGenre(GenreEnum.COOKBOOKS))
-                    .synopsis("Sinobsis")
-                    .price(302.00)
-                    .file("Literary-Association-Application/src/main/resources/books/Kljiga.pdf")
-                    .additionalAuthors("Gagata Gagic")
+                    .file(String.format("%sUvod u modelovanje softvera.pdf", booksFolder))
+                    .title("Uvod u modelovanje softvera")
+                    .synopsis("Knjiga za modelovanje softvera")
+                    .genre(g3)
+                    .ISBN("0-6918-5657-4")
+                    .keywords("softver,modelovanje,sablon")
+                    .publisher("FTN")
+                    .publicationYear(2020)
+                    .pages(690)
+                    .publicationPlace("Novi Sad, Srbija")
+                    .price(30.0)
+                    .additionalAuthors("Gordana Milosavljevic")
                     .build();
             book.setWriter(writer4);
 
             Book book2 = Book.bookBuilder()
-                    .ISBN("653515341234")
-                    .publisher("Simgidulum")
-                    .title("Tajtl")
-                    .publicationYear(2005)
-                    .keywords("kljucne reci")
-                    .pages(256)
-                    .publicationPlace("mesto publikacije")
-                    .genre(genreRepository.findByGenre(GenreEnum.COOKBOOKS))
-                    .synopsis("Sinobsis")
-                    .price(203.00)
-                    .file("Literary-Association-Application/src/main/resources/books/Tajtl.pdf")
-                    .additionalAuthors("Ivo Andric,Lazo Lazic")
+                    .file(String.format("%sValidacija podataka.pdf", booksFolder))
+                    .title("Validacija podataka")
+                    .synopsis("Saveti za validaciju podataka")
+                    .genre(g3)
+                    .ISBN("0-6147-9843-4")
+                    .keywords("validacija,podatak,pravilo")
+                    .publisher("FTN")
+                    .publicationYear(2020)
+                    .pages(690)
+                    .publicationPlace("Novi Sad, Srbija")
+                    .price(30.0)
+                    .additionalAuthors("Goran Sladic")
                     .build();
             book2.setWriter(writer5);
 
@@ -303,6 +307,12 @@ public class DummyDataService {
             bookRepository.save(b3);
             bookRepository.save(book);
             bookRepository.save(book2);
+
+            indexUnitService.saveBookIndexUnit(b1);
+            indexUnitService.saveBookIndexUnit(b2);
+            indexUnitService.saveBookIndexUnit(b3);
+            indexUnitService.saveBookIndexUnit(book);
+            indexUnitService.saveBookIndexUnit(book2);
 
             InvoiceItem item = InvoiceItem.builder().name(b3.getTitle())
                     .price(b3.getPrice()).quantity(1).build();
