@@ -11,11 +11,11 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
-@Document(indexName = "books", shards = 1, replicas = 0, type = "book")
+@Document(indexName = "books", replicas = 0, type = "book")
 public class BookIndexUnit {
 
     @Id
-    @Field(type = FieldType.Long, analyzer = "serbian-analyzer", searchAnalyzer = "serbian-analyzer")
+    @Field(type = FieldType.Long)
     private Long id;
 
     @Field(type = FieldType.Text, analyzer = "serbian-analyzer", searchAnalyzer = "serbian-analyzer")
@@ -25,7 +25,7 @@ public class BookIndexUnit {
     private String genre;
 
     @Field(type = FieldType.Boolean)
-    private boolean isFree;
+    private Boolean isFree;
 
     @Field(type = FieldType.Text, analyzer = "serbian-analyzer", searchAnalyzer = "serbian-analyzer")
     private String writers;

@@ -2,6 +2,11 @@ package goveed20.LiteraryAssociationApplication.services;
 
 import goveed20.LiteraryAssociationApplication.dtos.BookDTO;
 import goveed20.LiteraryAssociationApplication.dtos.BookListItemDTO;
+import goveed20.LiteraryAssociationApplication.elastic.dtos.SearchParamDTO;
+import goveed20.LiteraryAssociationApplication.elastic.dtos.SearchQueryDTO;
+import goveed20.LiteraryAssociationApplication.elastic.units.BookIndexUnit;
+import goveed20.LiteraryAssociationApplication.elastic.utils.BooleanParam;
+import goveed20.LiteraryAssociationApplication.elastic.utils.SearchHitsResultMapper;
 import goveed20.LiteraryAssociationApplication.exceptions.BusinessProcessException;
 import goveed20.LiteraryAssociationApplication.exceptions.NotFoundException;
 import goveed20.LiteraryAssociationApplication.model.*;
@@ -12,8 +17,16 @@ import goveed20.LiteraryAssociationApplication.repositories.RetailerRepository;
 import goveed20.LiteraryAssociationApplication.repositories.WorkingPaperRepository;
 import org.apache.commons.io.FileUtils;
 import org.camunda.bpm.engine.RuntimeService;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
+import org.springframework.data.elasticsearch.core.query.SearchQuery;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +46,9 @@ public class BookService {
     private static final String booksFolder = "literary-association/Literary-Association-Application/src/main/resources/books/";
 
     @Autowired
+    private ElasticsearchTemplate elasticsearchTemplate;
+
+    @Autowired
     private RuntimeService runtimeService;
 
     @Autowired
@@ -43,6 +59,54 @@ public class BookService {
 
     @Autowired
     private RetailerRepository retailerRepository;
+
+    public Page<BookIndexUnit> searchBooks(SearchQueryDTO searchQuery) {
+        NativeSearchQueryBuilder nativeSearchQueryBuilder = new NativeSearchQueryBuilder();
+        BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+
+        if (!validateSearchParams(searchQuery.getParams())) {
+            for (SearchParamDTO searchParam : searchQuery.getParams()) {
+                String name = searchParam.getName();
+                String value = searchParam.getValue();
+                boolean isPhraze = searchParam.getIsPhraze();
+
+                if (searchParam.getBooleanParam().equals(BooleanParam.AND) && isPhraze) {
+                    boolQueryBuilder.must(QueryBuilders.matchPhraseQuery(name, value));
+                } else if (searchParam.getBooleanParam().equals(BooleanParam.AND) && !isPhraze) {
+                    boolQueryBuilder.must(QueryBuilders.commonTermsQuery(name, value));
+                } else if (searchParam.getBooleanParam().equals(BooleanParam.OR) && isPhraze) {
+                    boolQueryBuilder.should(QueryBuilders.matchPhraseQuery(name, value));
+                } else {
+                    boolQueryBuilder.should(QueryBuilders.commonTermsQuery(name, value));
+                }
+            }
+        }
+
+        SearchQuery queryWithHighlight = nativeSearchQueryBuilder.withQuery(boolQueryBuilder).withHighlightFields(
+                new HighlightBuilder.Field("text")
+                        .preTags("<b>")
+                        .postTags("</b>")
+                        .numOfFragments(1)
+                        .fragmentSize(300)
+        ).withPageable(PageRequest.of(searchQuery.getPageNum(), 3))
+                .build();
+
+        return elasticsearchTemplate.queryForPage(queryWithHighlight, BookIndexUnit.class, new SearchHitsResultMapper());
+    }
+
+    private boolean validateSearchParams(List<SearchParamDTO> searchParams) {
+        for(SearchParamDTO searchParam : searchParams) {
+            if (isNullOrEmpty(searchParam.getName()) || isNullOrEmpty(searchParam.getValue())) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private boolean isNullOrEmpty(String value) {
+        return value == null || value.equals("");
+    }
 
     public List<BookListItemDTO> getBooks() {
         Set<String> bookTitles = new HashSet<>();
@@ -165,4 +229,5 @@ public class BookService {
 
         return new HashSet<>();
     }
+
 }
