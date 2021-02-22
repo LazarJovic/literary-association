@@ -43,7 +43,7 @@ const BookList = ({ search }) => {
     } else {
         return (
             <div>
-                <h2>Books</h2>
+                <h2 style={{ textAlign:'center', marginTop: '1.5%', marginBottom:'1.5%' }}>Books</h2>
                 <SearchForm/>
                 <ListGroup>
                     {

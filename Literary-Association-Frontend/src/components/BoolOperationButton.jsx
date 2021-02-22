@@ -20,6 +20,7 @@ const BoolOperationButton = ({ name, value, setValue }) => {
                         name="radio"
                         checked={value === operation.value}
                         onChange={({ currentTarget }) => setValue(name, currentTarget)}
+                        style={{ width:'20%', textAlign:'center' }}
                     >
                         {operation.name}
                     </ToggleButton>

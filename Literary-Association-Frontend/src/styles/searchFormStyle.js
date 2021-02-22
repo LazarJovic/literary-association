@@ -3,13 +3,21 @@ const mainDivStyle = {
 }
 
 const submitButtonStyle = {
-    marginTop: '2%',
+    marginTop: '3%',
     width: '20%',
     textAlign: 'center',
-    marginLeft: '38%'
+    marginLeft: '28%'
+}
+
+const clearButtonStyle = {
+    marginTop: '3%',
+    width: '20%',
+    textAlign: 'center',
+    marginLeft: '3%'
 }
 
 const searchFieldDivStyle = {
+    marginTop: '1%',
     width: '40%',
     display: 'inline-block',
     marginLeft: '6%'
@@ -19,4 +27,4 @@ const boolOperationButtonStyle = {
     display: 'inline'
 }
 
-export { mainDivStyle, submitButtonStyle, searchFieldDivStyle, boolOperationButtonStyle }
+export { mainDivStyle, submitButtonStyle, clearButtonStyle, searchFieldDivStyle, boolOperationButtonStyle }
