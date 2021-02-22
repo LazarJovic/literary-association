@@ -31,6 +31,8 @@ public class SearchHitsResultMapper implements SearchResultMapper {
             String highlightText = "";
             if (hit.getHighlightFields().size() != 0) {
                 highlightText = String.format("...%s...", hit.getHighlightFields().get("text").getFragments()[0].toString());
+            } else {
+                highlightText = (String) source.get("synopsis");
             }
 
             BookIndexUnit bookIndexUnit = BookIndexUnit.builder()

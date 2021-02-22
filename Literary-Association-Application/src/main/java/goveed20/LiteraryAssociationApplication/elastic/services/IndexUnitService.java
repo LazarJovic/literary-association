@@ -26,6 +26,7 @@ public class IndexUnitService {
                 .isFree(book.getPrice() == 0)
                 .writers(book.getAdditionalAuthors())
                 .basicInfo(createBasicInfo(book))
+                .synopsis(book.getSynopsis())
                 .text(pdfService.getContentText(new File(book.getFile())))
                 .build();
 

@@ -33,6 +33,9 @@ public class BookIndexUnit {
     @Field(type = FieldType.Text)
     private String basicInfo;
 
+    @Field(type = FieldType.Text)
+    private String synopsis;
+
     @Field(type = FieldType.Text, analyzer = "serbian-analyzer", searchAnalyzer = "serbian-analyzer")
     private String text;
 
