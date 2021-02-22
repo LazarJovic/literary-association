@@ -74,28 +74,29 @@ public class BookService {
             return elasticsearchTemplate.queryForPage(query, BookIndexUnit.class, new SearchHitsResultMapper());
         }
 
-        NativeSearchQueryBuilder nativeSearchQueryBuilder = new NativeSearchQueryBuilder();
+        NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder();
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
 
-        if (!validateSearchParams(searchQuery.getSearchParams())) {
-            for (SearchParamDTO searchParam : searchQuery.getSearchParams()) {
-                String name = searchParam.getName();
-                String value = searchParam.getValue();
-                boolean isPhraze = searchParam.getIsPhraze();
+        for (SearchParamDTO sp : searchQuery.getSearchParams()) {
+            String key = sp.getName();
+            String value = sp.getValue();
 
-                if (searchParam.getBooleanParam().equals(BooleanParam.AND) && isPhraze) {
-                    boolQueryBuilder.must(QueryBuilders.matchPhraseQuery(name, value));
-                } else if (searchParam.getBooleanParam().equals(BooleanParam.AND) && !isPhraze) {
-                    boolQueryBuilder.must(QueryBuilders.commonTermsQuery(name, value));
-                } else if (searchParam.getBooleanParam().equals(BooleanParam.OR) && isPhraze) {
-                    boolQueryBuilder.should(QueryBuilders.matchPhraseQuery(name, value));
+            if (sp.getBooleanParam().equals(BooleanParam.AND)) {
+                if (sp.getIsPhraze()) {
+                    boolQueryBuilder.must(QueryBuilders.matchPhraseQuery(key, value));
                 } else {
-                    boolQueryBuilder.should(QueryBuilders.commonTermsQuery(name, value));
+                    boolQueryBuilder.must(QueryBuilders.commonTermsQuery(key, value));
+                }
+            } else {
+                if (sp.getIsPhraze()) {
+                    boolQueryBuilder.should(QueryBuilders.matchPhraseQuery(key, value));
+                } else {
+                    boolQueryBuilder.should(QueryBuilders.commonTermsQuery(key, value));
                 }
             }
         }
 
-        SearchQuery queryWithHighlight = nativeSearchQueryBuilder.withQuery(boolQueryBuilder).withHighlightFields(
+        SearchQuery queryWithHighlight = queryBuilder.withQuery(boolQueryBuilder).withHighlightFields(
                 new HighlightBuilder.Field("text")
                         .preTags("<b>")
                         .postTags("</b>")

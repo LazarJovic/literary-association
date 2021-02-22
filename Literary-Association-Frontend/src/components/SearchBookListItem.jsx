@@ -1,9 +1,13 @@
 import React from 'react'
 import { Button, Col, ListGroup, Row } from 'react-bootstrap'
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import ReactHtmlParser from 'react-html-parser'
 
 const SearchBookListItem = ({ id, title, isFree, basicInfo, text }) => {
+
+    const history = useHistory()
+
+    const bookDetails = () => history.push(`/dashboard/books/${id}`)
 
     return (
         <ListGroup.Item>
@@ -25,7 +29,7 @@ const SearchBookListItem = ({ id, title, isFree, basicInfo, text }) => {
                 </Row>
             </Col>
             <Col>
-                <Button>{isFree ? 'Download' : 'Purchase'}</Button>
+                <Button onClick={bookDetails}>{isFree ? 'Download' : 'Purchase'}</Button>
             </Col>
         </ListGroup.Item>
     )

@@ -53,14 +53,14 @@ const SearchForm = () => {
             if (params[param]) {
                 if (params[param]['value'] !== '') {
                     isAll = false
+                    let data = {
+                        name: param,
+                        value: params[param]['value'].replace('"', ''),
+                        isPhraze: checkIfPhraze(params[param]['value']),
+                        booleanParam: params[param]['booleanOperator']
+                    }
+                    searchParams.push(data)
                 }
-                let data = {
-                    name: param,
-                    value: params[param]['value'].replace('"', ''),
-                    isPhraze: checkIfPhraze(params[param]['value']),
-                    booleanParam: params[param]['booleanOperator']
-                }
-                searchParams.push(data)
             }
         }
 
