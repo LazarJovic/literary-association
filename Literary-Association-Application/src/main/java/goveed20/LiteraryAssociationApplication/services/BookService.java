@@ -4,6 +4,7 @@ import goveed20.LiteraryAssociationApplication.dtos.BookDTO;
 import goveed20.LiteraryAssociationApplication.dtos.BookListItemDTO;
 import goveed20.LiteraryAssociationApplication.elastic.dtos.SearchParamDTO;
 import goveed20.LiteraryAssociationApplication.elastic.dtos.SearchQueryDTO;
+import goveed20.LiteraryAssociationApplication.elastic.repositories.BookIndexUnitRepository;
 import goveed20.LiteraryAssociationApplication.elastic.units.BookIndexUnit;
 import goveed20.LiteraryAssociationApplication.elastic.utils.BooleanParam;
 import goveed20.LiteraryAssociationApplication.elastic.utils.SearchHitsResultMapper;
@@ -18,12 +19,14 @@ import goveed20.LiteraryAssociationApplication.repositories.WorkingPaperReposito
 import org.apache.commons.io.FileUtils;
 import org.camunda.bpm.engine.RuntimeService;
 import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.MatchAllQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.data.elasticsearch.core.query.SearchQuery;
@@ -61,11 +64,21 @@ public class BookService {
     private RetailerRepository retailerRepository;
 
     public Page<BookIndexUnit> searchBooks(SearchQueryDTO searchQuery) {
+
+        if (searchQuery.isAllBooks()) {
+            MatchAllQueryBuilder queryBuilder = QueryBuilders.matchAllQuery();
+            NativeSearchQueryBuilder builder = new NativeSearchQueryBuilder().withQuery(queryBuilder)
+                    .withPageable(PageRequest.of(searchQuery.getPageNum(), 3));
+
+            SearchQuery query = builder.build();
+            return elasticsearchTemplate.queryForPage(query, BookIndexUnit.class, new SearchHitsResultMapper());
+        }
+
         NativeSearchQueryBuilder nativeSearchQueryBuilder = new NativeSearchQueryBuilder();
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
 
-        if (!validateSearchParams(searchQuery.getParams())) {
-            for (SearchParamDTO searchParam : searchQuery.getParams()) {
+        if (!validateSearchParams(searchQuery.getSearchParams())) {
+            for (SearchParamDTO searchParam : searchQuery.getSearchParams()) {
                 String name = searchParam.getName();
                 String value = searchParam.getValue();
                 boolean isPhraze = searchParam.getIsPhraze();
@@ -96,7 +109,7 @@ public class BookService {
 
     private boolean validateSearchParams(List<SearchParamDTO> searchParams) {
         for(SearchParamDTO searchParam : searchParams) {
-            if (isNullOrEmpty(searchParam.getName()) || isNullOrEmpty(searchParam.getValue())) {
+            if (isNull(searchParam.getName()) || isNull(searchParam.getValue())) {
                 return true;
             }
         }
@@ -104,8 +117,8 @@ public class BookService {
         return false;
     }
 
-    private boolean isNullOrEmpty(String value) {
-        return value == null || value.equals("");
+    private boolean isNull(String value) {
+        return value == null;
     }
 
     public List<BookListItemDTO> getBooks() {

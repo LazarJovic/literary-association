@@ -68,7 +68,7 @@ const Dashboard = () => {
                     <Book/>
                 </GuardedRoute>
                 <GuardedRoute exact path='/dashboard/books' meta={{ roles: ['READER'] }}>
-                    <BookList/>
+                    <BookList search={true}/>
                 </GuardedRoute>
                 <GuardedRoute path='/dashboard/membership' meta={{ roles: ['WRITER'] }}>
                     <Membership/>

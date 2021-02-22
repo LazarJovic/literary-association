@@ -2,6 +2,11 @@ import axios from 'axios'
 
 const BASE_URL = process.env.REACT_APP_BASE_URL
 
+const searchBooks = async (query) => {
+    const response = await axios.post(`${BASE_URL}/book/search`, query)
+    return response.data
+}
+
 const getBooks = async () => {
     const response = await axios.get(`${BASE_URL}/book`)
     return response.data
@@ -34,12 +39,20 @@ const getMyBooks = async () => {
     return response.data
 }
 
+const getBookGenres = async () => {
+    const response = await axios.get(`${BASE_URL}/book/genre`)
+    return response.data
+}
+
+
 const bookService = {
+    searchBooks,
     getBooks,
     getBook,
     getMyBooks,
     downloadBook,
-    getRetailersForBook
+    getRetailersForBook,
+    getBookGenres
 }
 
 

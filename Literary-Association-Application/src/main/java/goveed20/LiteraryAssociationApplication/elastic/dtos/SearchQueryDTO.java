@@ -11,8 +11,10 @@ import java.util.List;
 @NoArgsConstructor
 public class SearchQueryDTO {
 
-    private List<SearchParamDTO> params;
+    private List<SearchParamDTO> searchParams;
 
     private Integer pageNum;
+
+    private boolean allBooks;
 
 }

@@ -33,7 +33,7 @@ public class IndexUnitService {
     }
 
     private String createBasicInfo(Book book) {
-        return String.format("Authors: %s \n %s, %s, %s", book.getAuthors(), book.getPublicationYear(),
+        return String.format("%s, %s, %s, %s", book.getAuthors(), book.getPublicationYear(),
                 book.getPublisher(), book.getPublicationPlace());
     }
 

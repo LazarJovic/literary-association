@@ -27,6 +27,27 @@ export const setBook = (id) => {
     }
 }
 
+export const searchBooks = (query) => {
+    return async dispatch => {
+        const books = await bookService.searchBooks(query)
+
+        dispatch({
+            type: 'GET_BOOKS',
+            books: books ? books['content'] : []
+        })
+
+        dispatch({
+            type: 'SET_PAGE',
+            page: query['pageNum']
+        })
+
+        dispatch({
+            type: 'SET_TOTAL_PAGES',
+            totalPages: books['totalPages']
+        })
+    }
+}
+
 const reducer = (state = { list: [], shown: null, myBooks: false }, action) => {
     switch (action.type) {
         case 'GET_BOOKS': {

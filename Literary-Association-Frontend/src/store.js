@@ -2,6 +2,7 @@ import userReducer from './reducers/userReducer'
 import userTaskReducer from './reducers/userTaskReducer'
 import bookReducer from './reducers/bookReducer'
 import notificationReducer from './reducers/notificationReducer'
+import paginationReducer from './reducers/paginationReducer'
 import { createStore, combineReducers, applyMiddleware } from 'redux'
 import { composeWithDevTools } from 'redux-devtools-extension'
 import thunk from 'redux-thunk'
@@ -10,7 +11,8 @@ const reducer = combineReducers({
     user: userReducer,
     userTasks: userTaskReducer,
     books: bookReducer,
-    notification: notificationReducer
+    notification: notificationReducer,
+    pagination: paginationReducer
 })
 
 const rootReducer = (state, action) => {

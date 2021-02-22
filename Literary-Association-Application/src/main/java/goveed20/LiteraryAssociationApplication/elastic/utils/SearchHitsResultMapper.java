@@ -3,6 +3,7 @@ package goveed20.LiteraryAssociationApplication.elastic.utils;
 import goveed20.LiteraryAssociationApplication.elastic.units.BookIndexUnit;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.SearchResultMapper;
 import org.springframework.data.elasticsearch.core.aggregation.AggregatedPage;
@@ -27,10 +28,13 @@ public class SearchHitsResultMapper implements SearchResultMapper {
             }
 
             Map<String, Object> source = hit.getSourceAsMap();
-            String highlightText = String.format("...%s...", hit.getHighlightFields().get("text").getFragments()[0].toString());
+            String highlightText = "";
+            if (hit.getHighlightFields().size() != 0) {
+                highlightText = String.format("...%s...", hit.getHighlightFields().get("text").getFragments()[0].toString());
+            }
 
             BookIndexUnit bookIndexUnit = BookIndexUnit.builder()
-                    .id((Long) source.get("id"))
+                    .id(((Integer) source.get("id")).longValue())
                     .title((String) source.get("title"))
                     .basicInfo((String) source.get("basicInfo"))
                     .isFree((boolean) source.get("isFree"))
