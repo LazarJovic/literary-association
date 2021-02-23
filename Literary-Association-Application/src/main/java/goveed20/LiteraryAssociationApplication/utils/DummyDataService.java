@@ -11,12 +11,14 @@ import goveed20.LiteraryAssociationApplication.repositories.GenreRepository;
 import goveed20.LiteraryAssociationApplication.repositories.RetailerRepository;
 import goveed20.LiteraryAssociationApplication.services.CamundaUserService;
 import goveed20.LiteraryAssociationApplication.services.LocationService;
+import goveed20.LiteraryAssociationApplication.services.PlagiarismService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
@@ -49,10 +51,13 @@ public class DummyDataService {
     private LocationService locationService;
 
     @Autowired
+    private PlagiarismService plagiarismService;
+
+    @Autowired
     private RetailerRepository retailerRepository;
 
     @EventListener(ApplicationReadyEvent.class)
-    public void addDummyData() {
+    public void addDummyData() throws IOException {
         if (baseUserRepository.findAllByRole(UserRole.BOARD_MEMBER).isEmpty()) {
             BaseUser boardMember1 = BaseUser.builder()
                     .name("board_member_1_name")
@@ -313,6 +318,12 @@ public class DummyDataService {
             indexUnitService.saveBookIndexUnit(b3);
             indexUnitService.saveBookIndexUnit(book);
             indexUnitService.saveBookIndexUnit(book2);
+
+            plagiarismService.uploadPaper(b1.getTitle(), b1.getFile(), false);
+            plagiarismService.uploadPaper(b2.getTitle(), b2.getFile(), false);
+            plagiarismService.uploadPaper(b3.getTitle(), b3.getFile(), false);
+            plagiarismService.uploadPaper(book.getTitle(), book.getFile(), false);
+            plagiarismService.uploadPaper(book2.getTitle(), book2.getFile(), false);
 
             InvoiceItem item = InvoiceItem.builder().name(b3.getTitle())
                     .price(b3.getPrice()).quantity(1).build();

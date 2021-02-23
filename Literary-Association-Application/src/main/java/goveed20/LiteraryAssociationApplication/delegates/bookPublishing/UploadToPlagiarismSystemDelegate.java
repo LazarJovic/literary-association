@@ -1,14 +1,51 @@
 package goveed20.LiteraryAssociationApplication.delegates.bookPublishing;
 
+import goveed20.LiteraryAssociationApplication.dtos.PaperDTO;
+import goveed20.LiteraryAssociationApplication.dtos.PlagiarismResultDTO;
+import goveed20.LiteraryAssociationApplication.model.WorkingPaper;
+import goveed20.LiteraryAssociationApplication.repositories.WorkingPaperRepository;
+import goveed20.LiteraryAssociationApplication.services.PlagiarismService;
+import one.util.streamex.StreamEx;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UploadToPlagiarismSystemDelegate implements JavaDelegate {
 
+    @Autowired
+    private WorkingPaperRepository workingPaperRepository;
+
+    @Autowired
+    private PlagiarismService plagiarismService;
+
     @Override
     public void execute(DelegateExecution delegateExecution) {
-        System.out.println("Plagiarism check");
+        String title = String.valueOf(delegateExecution.getVariable("working_paper"));
+        WorkingPaper workingPaper = workingPaperRepository.findByTitle(title);
+
+        try {
+            PlagiarismResultDTO results = plagiarismService.uploadPaper(workingPaper.getTitle(), workingPaper.getFile(), true);
+
+            if (results != null) {
+                delegateExecution.setVariable("uploaded_paper_id", results.getUploadedPaper().getId());
+
+                List<String> titlesAndPercents = StreamEx.of(results.getSimilarPapers())
+                        .distinct(PaperDTO::getTitle)
+                        .filter(p -> !p.getTitle().contains(title))
+                        .map(p -> String.format("%s %f%%", p.getTitle(), p.getSimilarProcent()))
+                        .collect(Collectors.toList());
+
+                delegateExecution.setVariable("similar_papers", titlesAndPercents);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            delegateExecution.setVariable("similar_papers", new ArrayList<>());
+        }
     }
 }
