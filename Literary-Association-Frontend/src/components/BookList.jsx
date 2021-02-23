@@ -1,7 +1,6 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { ListGroup, Table } from 'react-bootstrap'
-// import { getBooks } from '../reducers/bookReducer'
 import BookListItem from './BookListItem'
 import SearchForm from './SearchForm'
 import SearchBookListItem from './SearchBookListItem'

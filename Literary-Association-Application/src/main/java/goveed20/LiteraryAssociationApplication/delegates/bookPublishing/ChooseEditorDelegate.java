@@ -24,7 +24,7 @@ public class ChooseEditorDelegate implements JavaDelegate {
     public void execute(DelegateExecution delegateExecution) {
         ArrayList<BaseUser> editors = (ArrayList<BaseUser>) userRepository.findAllByRole(UserRole.EDITOR);
         BaseUser editor = editors.get((int) (Math.random() * editors.size()));
-
+        System.out.println(editor.getUsername());
         delegateExecution.setVariable("editor", editor.getUsername());
 
         String text = String.format("Dear %s %s,\nNew book request is received from %s", editor.getName(),
