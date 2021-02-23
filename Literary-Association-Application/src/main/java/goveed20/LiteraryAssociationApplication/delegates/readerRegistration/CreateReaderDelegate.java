@@ -1,5 +1,6 @@
 package goveed20.LiteraryAssociationApplication.delegates.readerRegistration;
 
+import goveed20.LiteraryAssociationApplication.elastic.services.IndexUnitService;
 import goveed20.LiteraryAssociationApplication.model.BetaReaderStatus;
 import goveed20.LiteraryAssociationApplication.model.Reader;
 import goveed20.LiteraryAssociationApplication.model.VerificationToken;
@@ -42,6 +43,9 @@ public class CreateReaderDelegate implements JavaDelegate {
     private NotificationService notificationService;
 
     @Autowired
+    private IndexUnitService indexUnitService;
+
+    @Autowired
     private GenreRepository genreRepository;
 
     @SuppressWarnings("unchecked")
@@ -58,6 +62,10 @@ public class CreateReaderDelegate implements JavaDelegate {
 
         Reader reader = createReader(data);
         readerRepository.save(reader);
+
+        if(reader.getBetaReader()) {
+            indexUnitService.saveBetaReaderIndexUnit(reader);
+        }
         delegateExecution.setVariable("user", reader.getUsername());
 
         camundaUserService.createCamundaUser(reader);

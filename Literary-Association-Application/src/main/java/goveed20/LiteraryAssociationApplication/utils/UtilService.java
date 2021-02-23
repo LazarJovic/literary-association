@@ -5,6 +5,7 @@ import com.google.gson.reflect.TypeToken;
 import goveed20.LiteraryAssociationApplication.dtos.ButtonDTO;
 import goveed20.LiteraryAssociationApplication.dtos.FormSubmissionFieldDTO;
 import goveed20.LiteraryAssociationApplication.dtos.OptionDTO;
+import goveed20.LiteraryAssociationApplication.elastic.units.BetaReaderIndexUnit;
 import goveed20.LiteraryAssociationApplication.model.BaseUser;
 import goveed20.LiteraryAssociationApplication.dtos.*;
 import goveed20.LiteraryAssociationApplication.model.BetaReaderStatus;
@@ -35,10 +36,16 @@ public class UtilService {
                 .collect(Collectors.toList()));
     }
 
-    public static String serializeBetaReaders(HashSet<BetaReaderStatus> betaReaderStatuses) {
+    public static String serializeBetaReaderIndexUnits(List<BetaReaderIndexUnit> betaReaderIndexingUnits) {
         Gson gson = new Gson();
-        return gson.toJson(betaReaderStatuses.stream().map(b -> OptionDTO.builder().name(b.getReader().getName() + " " + b.getReader().getSurname())
-                .value(b.getReader().getUsername())).collect(Collectors.toSet()));
+        return gson.toJson(
+                betaReaderIndexingUnits.stream().map(b ->
+                        OptionDTO.builder()
+                                .name(b.getName())
+                                .value(b.getUsername())
+                                .build()
+                ).collect(Collectors.toSet())
+        );
     }
 
     public static String serializeEditors(HashSet<BaseUser> baseUsers) {

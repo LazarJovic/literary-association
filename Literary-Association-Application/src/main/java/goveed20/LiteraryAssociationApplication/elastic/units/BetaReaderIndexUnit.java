@@ -15,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
-@Document(indexName = "beta-readers", shards = 1, replicas = 0, type = "beta-reader")
+@Document(indexName = "beta-readers", replicas = 0, type = "beta-reader")
 public class BetaReaderIndexUnit {
 
     @Id
@@ -25,9 +25,12 @@ public class BetaReaderIndexUnit {
     @GeoPointField
     private GeoPoint geoPoint;
 
-    @Field(type = FieldType.Text, analyzer = "serbian-analyzer", searchAnalyzer = "serbian-analyzer")
+    @Field(type = FieldType.Text)
     private String name;
 
     @Field(type = FieldType.Keyword)
     private List<String> genres;
+
+    @Field(type = FieldType.Text)
+    private String username;
 }

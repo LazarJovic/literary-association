@@ -16,12 +16,11 @@ public class BetaReaderStatus {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ElementCollection(targetClass = Genre.class)
-    @JoinTable(name = "beta_genres", joinColumns = @JoinColumn(name = "beta_id"))
-    @Column(nullable = false)
+    @ManyToMany
     private Set<Genre> betaGenres;
 
     @Column(nullable = false)
+    @Builder.Default
     private Integer penaltyPoints = 0;
 
     @OneToOne(optional = false)
