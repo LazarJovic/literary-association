@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { ListGroup } from 'react-bootstrap'
 import TaskListItem from './TaskListItem'
 import { getActiveTasks } from '../reducers/userTaskReducer'
+import { h2Style } from '../styles/generalStyles'
 
 const TaskList = ({ username }) => {
     const dispatch = useDispatch()
@@ -15,7 +16,7 @@ const TaskList = ({ username }) => {
 
     return (
         <div>
-            <h2>Active tasks</h2>
+            <h2 style={ h2Style }>Active tasks</h2>
             <ListGroup>
                 {
                     tasks.map(task =>

@@ -26,7 +26,7 @@ const FormField = ({ formField, onChange, value }) => {
                 JSON.parse(formField.properties.buttons).map(button => {
                     return (
                         <Form.Group as={Row} key={button.id}>
-                            <Col sm={3}>
+                            <Col>
                                 <Button onClick={() => download(button.downloadURL, button.title)}>{button.label}</Button>
                             </Col>
                         </Form.Group>
@@ -50,7 +50,7 @@ const FormField = ({ formField, onChange, value }) => {
                     {formField.properties.additional && <AdditionalContentList additionals={formField.properties.additional}/>}
                     {checkForButtons(formField)}
                     <Form.Group as={Row} controlId={formField.id}>
-                        <Form.Label sm={1} column>{formField.label}</Form.Label>
+                        <Form.Label sm={2} column>{formField.label}</Form.Label>
                         <Col sm={3}>
                             <Form.Control as="select" {...nativeProps} onChange={onChange} value={value}>
                                 <option key='empty' value=''>-</option>
@@ -71,7 +71,7 @@ const FormField = ({ formField, onChange, value }) => {
                 <>
                     {formField.properties.additional && <AdditionalContentList additionals={formField.properties.additional}/>}
                     <Form.Group as={Row} controlId={formField.id}>
-                        <Form.Label sm={1} column>{formField.label}</Form.Label>
+                        <Form.Label sm={2} column>{formField.label}</Form.Label>
                         <Col sm={3}>
                             <Form.Control as="select" {...nativeProps} onChange={onChange} value={value}>
                                 <option key='empty' value=''>-</option>
@@ -97,7 +97,7 @@ const FormField = ({ formField, onChange, value }) => {
                 {formField.properties.additional && <AdditionalContentList additionals={formField.properties.additional}/>}
                 {checkForButtons(formField)}
                 <Form.Group as={Row} controlId={formField.id}>
-                    <Form.Label sm={1} column>{formField.label}</Form.Label>
+                    <Form.Label sm={2} column>{formField.label}</Form.Label>
                     <Col sm={3}>
                         <Form.Control as='textarea' onChange={onChange} value={value} rows={formField.properties.rows}/>
                     </Col>
@@ -110,7 +110,7 @@ const FormField = ({ formField, onChange, value }) => {
             <>
                 {formField.properties.additional && <AdditionalContentList additionals={formField.properties.additional}/>}
                 <Form.Group as={Row} controlId={formField.id}>
-                    <Form.Label sm={1} column>{formField.label}</Form.Label>
+                    <Form.Label sm={2} column>{formField.label}</Form.Label>
                     <Col sm={3}>
                         <Form.Control {...formField.properties} onChange={onChange} value={value}/>
                     </Col>

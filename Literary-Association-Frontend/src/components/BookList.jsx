@@ -1,25 +1,21 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { Table, ListGroup } from 'react-bootstrap'
+import { ListGroup, Table } from 'react-bootstrap'
 // import { getBooks } from '../reducers/bookReducer'
 import BookListItem from './BookListItem'
 import SearchForm from './SearchForm'
 import SearchBookListItem from './SearchBookListItem'
 import Paginator from './Paginator'
+import { h2Style } from '../styles/generalStyles'
 
 const BookList = ({ search }) => {
-    // const dispatch = useDispatch()
-
-    // useEffect(() => {
-    //     dispatch(getBooks(myBooks))
-    // }, [])
 
     const books = useSelector(state => state.books.list)
 
     if (!search) {
         return (
             <div>
-                <h2>Books</h2>
+                <h2 style={ h2Style }>Books</h2>
                 <Table striped bordered hover>
                     <thead>
                     <tr>
@@ -43,9 +39,9 @@ const BookList = ({ search }) => {
     } else {
         return (
             <div>
-                <h2 style={{ textAlign:'center', marginTop: '1.5%', marginBottom:'1.5%' }}>Books</h2>
+                <h2 style={ h2Style }>Books</h2>
                 <SearchForm/>
-                <ListGroup>
+                <ListGroup style={{ marginBottom:'1%' }}>
                     {
                         books.map(b => <SearchBookListItem key={b.id} {...b}/>)
                     }

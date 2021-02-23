@@ -7,6 +7,7 @@ import Form from './Form'
 import { Col, Spinner } from 'react-bootstrap'
 import PdfViewer from './PdfViewer'
 import { setNotification } from '../reducers/notificationReducer'
+import { h2Style, centralDivStyle, formDivStyle } from '../styles/generalStyles'
 
 const Task = () => {
     const dispatch = useDispatch()
@@ -40,10 +41,12 @@ const Task = () => {
     switch (task.type) {
     case 'FORM': {
         return (
-            <div>
-                <h2>{task.name}</h2>
+            <div style={ centralDivStyle }>
+                <h2  style={ h2Style }>{task.name}</h2>
                 {task.documents && task.documents.map((d, index) => <Col key={index}><PdfViewer pdf={d}/>&nbsp;</Col>)}
-                <Form form={task} onSubmit={onSubmit}/>
+                <div style={ formDivStyle } >
+                    <Form form={task} onSubmit={onSubmit}/>
+                </div>
             </div>
         )
     }

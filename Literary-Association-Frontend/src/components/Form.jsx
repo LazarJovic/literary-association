@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Button, Col, Form as BootstrapForm, Row } from 'react-bootstrap'
 import FormField from './FormField'
+import { submitButton } from '../styles/generalStyles'
 
 const Form = ({ form, onSubmit }) => {
     const [state, setState] = useState(createFormState(form.formFields))
@@ -41,7 +42,6 @@ const Form = ({ form, onSubmit }) => {
             encodedFiles.push(await toBase64(fileInput.files[i]))
         }
 
-        console.log(encodedFiles)
         state[field.id] = encodedFiles.join(' ')
     }
 
@@ -62,7 +62,6 @@ const Form = ({ form, onSubmit }) => {
             .filter(ff => ff.properties.type === 'file')
             .map(ff => encodeSingleField(ff, preparedState))
         ).then(() => {
-            console.log(preparedState)
             onSubmit(preparedState)
         })
     }
@@ -78,8 +77,8 @@ const Form = ({ form, onSubmit }) => {
                     )
                 }
                 <BootstrapForm.Group as={Row}>
-                    <Col sm={{ span: 4, offset: 2 }}>
-                        <Button size="lg" variant="primary" type="submit">Submit</Button>
+                    <Col>
+                        <Button style={ submitButton } size="lg" variant="primary" type="submit">Submit</Button>
                     </Col>
                 </BootstrapForm.Group>
             </BootstrapForm>

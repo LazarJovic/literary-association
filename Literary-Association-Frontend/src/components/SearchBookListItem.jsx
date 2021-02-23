@@ -19,17 +19,17 @@ const SearchBookListItem = ({ id, title, isFree, basicInfo, text }) => {
                 </Row>
                 <Row>
                     <Col>
-                        <p style={{ color: '#006621', fontSize: 13 }}>{basicInfo}</p>
+                        <p style={{ color: '#6f2aa3', fontSize: 13 }}>{basicInfo}</p>
                     </Col>
                 </Row>
-                <Row>
+                <Row style={{ marginTop:'-1%' }}>
                     <Col>
                         {ReactHtmlParser(text)}
                     </Col>
                 </Row>
             </Col>
             <Col>
-                <Button onClick={bookDetails}>{isFree ? 'Download' : 'Purchase'}</Button>
+                <Button onClick={bookDetails} style={{ marginTop:'1%' }}>{isFree ? 'Download' : 'Purchase'}</Button>
             </Col>
         </ListGroup.Item>
     )
