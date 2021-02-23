@@ -8,6 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder(toBuilder = true)
 public class AdditionalContentDTO {
-    private boolean isComment;
+    private boolean isList;
     private Object content;
+    private boolean isPlagiarism;
 }

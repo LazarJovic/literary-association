@@ -7,7 +7,11 @@ const AdditionalContentList = ({ additionals }) => {
         <>
             {
                 JSON.parse(additionals).map(additional => {
-                    return <Additional key={++i} isComment={additional.isComment} content={additional.content}/>
+                    return <Additional
+                        key={++i}
+                        isList={additional.isList}
+                        content={additional.content}
+                        isPlagiarism={additional.isPlagiarism}/>
                 })
             }
         </>

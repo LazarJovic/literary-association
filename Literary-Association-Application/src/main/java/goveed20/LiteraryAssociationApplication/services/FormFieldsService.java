@@ -218,14 +218,17 @@ public class FormFieldsService {
 
 
             additionalContentDTO = AdditionalContentDTO.builder()
-                    .isComment(false)
+                    .isList(false)
                     .content(workingPapers)
+                    .isPlagiarism(false)
                     .build();
         } else {
             List<String> comments = new ArrayList<>();
+            boolean isPlagiarism = false;
             switch (task.getFormKey()) {
                 case "plagiarism_form":
                     comments.addAll((List<String>) runtimeService.getVariable(task.getProcessInstanceId(), "similar_papers"));
+                    isPlagiarism = true;
                     break;
                 case "paper_change_form":
                     commentRepository
@@ -251,8 +254,9 @@ public class FormFieldsService {
                     break;
             }
             additionalContentDTO = AdditionalContentDTO.builder()
-                    .isComment(true)
+                    .isList(true)
                     .content(comments)
+                    .isPlagiarism(isPlagiarism)
                     .build();
         }
 
